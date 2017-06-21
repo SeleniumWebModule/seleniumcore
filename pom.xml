@@ -3,6 +3,7 @@
  <groupId>br.com.rjconsultores.tests.webmodules</groupId>
  <artifactId>seleniumcore</artifactId>
  <packaging>jar</packaging>
+ <version>0.0.1</version>
  <name>Selenium Core</name>
   
  <properties>
@@ -27,5 +28,5 @@
 			<artifactId>selenium-java</artifactId>
 			<version>3.4.0</version>
 		</dependency>
-	</dependencies>
+ </dependencies>
 </project>
