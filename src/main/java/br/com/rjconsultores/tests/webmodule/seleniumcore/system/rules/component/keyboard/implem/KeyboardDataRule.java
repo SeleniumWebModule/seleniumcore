@@ -1,14 +1,13 @@
 package br.com.rjconsultores.tests.webmodule.seleniumcore.system.rules.component.keyboard.implem;
 
-import br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp.Event;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp.ComponentEvent;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.rules.esp.ComponentRule;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Component;
-import br.com.rjconsultores.tests.webmodule.seleniumcore.system.View;
-import br.com.rjconsultores.tests.webmodule.seleniumcore.system.rules.esp.Rule;
 
-public class KeyboardDataRule implements Rule{
+public class KeyboardDataRule implements ComponentRule{
 
 	@Override
-	public void validate(View view, Component component, Event event) {
+	public void validate(Component component, ComponentEvent event) {
 		/*this.
 		SeleniumElement.findElementAndGetVa(component.getAttributes());*/
 
