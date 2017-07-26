@@ -258,6 +258,7 @@ interface Event {
 	}
 	
 	public default WebElement getElement(Map<AttributeKey, String> attributes) {
+<<<<<<< HEAD
 		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
 		if (findBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
@@ -265,21 +266,34 @@ interface Event {
 		
 		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
 		if (valueFindBy == null) {
+=======
+		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
+		if (findBy == null || findBy.isEmpty()) {
+			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
+		}
+		
+		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
+		if (valueFindBy == null || valueFindBy.isEmpty()) {
+>>>>>>> bfbde733aadb7b40d81b9c389adf78d6aedbb02c
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
 		}
 		
 		String findAttributeBy = attributes.get(AttributeKey.FIND_ATTRIBUTE_BY);
-		if (findAttributeBy == null) {
+		if (findAttributeBy == null || findAttributeBy.isEmpty()) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_ATTRIBUTE_BY.");
 		}
 		
 		String attributeID = attributes.get(AttributeKey.ATTRIBUTE_ID);
-		if (attributeID == null) {
+		if (attributeID == null || attributeID.isEmpty()) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_ID.");
 		}
 		
 		
 		for (WebElement element: Selenium.getElements(findBy, valueFindBy)) {
+			if (element.getAttribute(findAttributeBy) == null) {
+				throw new RuntimeException("O elemento " + valueFindBy + " não possui o atributo " + findAttributeBy);
+			}
+			
 			if (element.getAttribute(findAttributeBy).contains(attributeID)) {
 				return element;
 			}
