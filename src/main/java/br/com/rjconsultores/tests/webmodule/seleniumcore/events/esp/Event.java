@@ -24,39 +24,72 @@ interface Event {
 			throw new RuntimeException("Quantidade de tentativas excedida. Elemento não disponível");
 		}
 		
-		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
+		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
 		if (findBy == null || findBy.isEmpty()) {
 			throw new RuntimeException(
 					"Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_COMPONENT_BY.");
 		}
 		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
+		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
 		if (valueFindBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
 		}
 		
+		String attributeID = attributes.get(AttributeKey.ATTRIBUTE_ID);
+		if (attributeID == null || attributeID.isEmpty()) {
+			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_ID.");
+		}
 		
-		String waitFor = attributes.get(AttributeKey.WAIT_FOR);
-		if (waitFor == null || waitFor.isEmpty()) {
-			throw new RuntimeException(
-					"Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.WAIT_FOR.");
+		String attributeValue = attributes.get(AttributeKey.ATTRIBUTE_VALUE);
+		if (attributeValue == null || attributeValue.isEmpty()) {
+			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_VALUE.");
 		}
 		
 		Collection<WebElement> elements = Selenium.getElements(findBy, valueFindBy);
 		
 		if (elements == null || elements.isEmpty()) {
-			waitElementReady(attributes, --attemptNumber, elements);
+			waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
 		}
-
-		for (WebElement element: elements) {
-			if (element.getText().trim().equals(valueFindBy)) {
-				if (!element.isDisplayed()) {
-					waitElementReady(attributes, --attemptNumber, elements);
-				}
-				
-				return;
-			}			
+		
+		for (WebElement element : elements) {
+			switch (attributeID ) {
+				case "text":
+					{
+						if (element.getText().equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+					break;
+				case "value":
+					{
+						if (element.getAttribute("value").equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+					break;
+				case "title":
+					{
+						if (element.getAttribute("title").equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+			}
 		}
+		
+		throw new RuntimeException("Não foi possível encontrar o elemento " + attributeValue + " pelo attributo " + attributeID + 
+					".Consulta realizada via " + findBy + ": " + findBy);
 	}
 	
 	/**
@@ -66,51 +99,56 @@ interface Event {
 	 * @param attribute
 	 *            Tela que sofre o evento
 	 */
-	default void waitElementReady(Map<AttributeKey, String> attributes, int attemptNumber, Collection<WebElement> elements) {
-		// quantidade de tentativas para a exibição do elemento
-		if (attemptNumber == 0) {
-			throw new RuntimeException("Quantidade de tentativas excedida. Elemento não disponível");
+	default void waitElementReady(String attributeID, String attributeValue, int attemptNumber, Collection<WebElement> elements) {
+		if (elements == null || elements.isEmpty()) {
+			waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
 		}
 		
-		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
-		if (findBy == null || findBy.isEmpty()) {
-			throw new RuntimeException(
-					"Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
-		}
-		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
-		if (valueFindBy == null) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
-		}
-		
-		String waitFor = attributes.get(AttributeKey.WAIT_FOR);
-		if (waitFor == null || waitFor.isEmpty()) {
-			throw new RuntimeException(
-					"Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.WAIT_FOR.");
-		}
-		
-		if (elements.isEmpty()) {
-			waitElementReady(attributes, --attemptNumber);
-		}
-
-		for (WebElement element: elements) {
-			if (element.getText().trim().equals(valueFindBy)) {
-				if (!element.isDisplayed()) {
-					waitElementReady(attributes, --attemptNumber);
-				}
-				
-				return;
-			}			
+		for (WebElement element : elements) {
+			switch (attributeID ) {
+				case "text":
+					{
+						if (element.getText().equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+					break;
+				case "value":
+					{
+						if (element.getAttribute("value").equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+					break;
+				case "title":
+					{
+						if (element.getAttribute("title").equals(attributeValue)) {
+							if (!element.isDisplayed()) {
+								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+							}
+							
+							return;
+						}
+					}
+			}
 		}
 	}
 	
 	public default WebElement getElementValue(Map<AttributeKey, String> attributes) {
-		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
+		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
 		if (findBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
 		}
 		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
+		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
 		if (valueFindBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
 		}
@@ -185,8 +223,8 @@ interface Event {
 		}
 		
 		Map<AttributeKey, String> siblingAttributes = new HashMap<>();
-		siblingAttributes.put(AttributeKey.FIND_COMPONENT_BY, findSiblingBy);
-		siblingAttributes.put(AttributeKey.VALUE_FIND_COMPONENT_BY, siblingfindBy);
+		siblingAttributes.put(AttributeKey.FIND_VIEW_COMPONENT_BY, findSiblingBy);
+		siblingAttributes.put(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY, siblingfindBy);
 		
 		WebElement parent = getParentElement(this.getElementValue(siblingAttributes));
 		
@@ -220,12 +258,12 @@ interface Event {
 	}
 	
 	public default WebElement getElement(Map<AttributeKey, String> attributes) {
-		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
+		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
 		if (findBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
 		}
 		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
+		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
 		if (valueFindBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
 		}

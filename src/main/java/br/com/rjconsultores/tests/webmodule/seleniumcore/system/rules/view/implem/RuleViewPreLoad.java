@@ -15,10 +15,5 @@ public class RuleViewPreLoad implements WindowRule {
 		if (view.getAttributes().containsKey(AttributeKey.VIEW_NAME) && view.getAttributes().get(AttributeKey.VIEW_NAME).equals("Login")) {
 			return;
 		}
-		
-		if (view.getAttributes().containsKey(AttributeKey.WAIT_FOR)) {
-			event.waitElementReady(view.getAttributes(), view.getAttemptNumber());
-			return;
-		}
 	}
 }

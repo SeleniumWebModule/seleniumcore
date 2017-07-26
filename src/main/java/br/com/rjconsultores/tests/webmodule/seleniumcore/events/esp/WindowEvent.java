@@ -28,13 +28,5 @@ public interface WindowEvent extends Event {
 		throw new RuntimeException("Não implementado!!");
 	}
 	
-	/**
-	 * Método exclusivo para a interface Event.
-	 */
-	@Override
-	default void waitElementReady(Map<AttributeKey, String> attributes, int attemptNumber, Collection<WebElement> elements) {
-		throw new RuntimeException("Você não tem permissão para utilizar esse método. Utilize waitElementRead sem elements");
-	}
-	
 	public void doAction(View view, Collection<WindowRule> rules);
 }

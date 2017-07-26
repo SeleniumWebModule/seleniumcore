@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
-import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.WaitFor;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp.WindowEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.view.PosLoadWindowEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.view.PreLoadWindowEvent;
@@ -28,7 +27,6 @@ public class View {
 
 	public View() {
 		attributes = new HashMap<>();
-		attributes.put(AttributeKey.WAIT_FOR, WaitFor.VIEW.name());
 		
 		components = new ArrayList<>();
 		events = new ArrayList<>();
@@ -49,7 +47,7 @@ public class View {
 
 	public void validateComponents() {
 		for (Component component : components) {
-			component.validate(this);
+			component.validate();
 		}
 	}
 
