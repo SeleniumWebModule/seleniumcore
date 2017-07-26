@@ -28,7 +28,6 @@ public class View {
 
 	public View() {
 		attributes = new HashMap<>();
-		attributes.put(AttributeKey.WAIT_FOR, WaitFor.VIEW.name());
 		
 		components = new ArrayList<>();
 		events = new ArrayList<>();
@@ -49,7 +48,7 @@ public class View {
 
 	public void validateComponents() {
 		for (Component component : components) {
-			component.validate(this);
+			component.validate();
 		}
 	}
 

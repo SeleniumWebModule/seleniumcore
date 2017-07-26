@@ -10,11 +10,6 @@ public class PreLoadWindowEvent implements WindowEvent {
 
 	@Override
 	public void doAction(View view, Collection<WindowRule> rules) {
-		if (view != null) {			
-			rules.forEach(rule -> rule.validate(view, this));
-			return;
-		}
-		
 		rules.forEach(rule -> rule.validate(view, this));
 	}
 }

@@ -41,7 +41,7 @@ public class Component {
 		preLoad.doAction(this, rulesPreLoad);
 	}
 
-	public void validate(View view) {
+	public void validate() {
 		this.validatePreLoadEvent();
 		events.forEach(event -> event.doAction(this, rules));
 		this.validatePosLoadEvent();
