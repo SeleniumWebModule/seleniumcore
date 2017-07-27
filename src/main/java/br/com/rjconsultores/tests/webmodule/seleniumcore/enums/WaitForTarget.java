@@ -1,5 +1,5 @@
 package br.com.rjconsultores.tests.webmodule.seleniumcore.enums;
 
-public enum WaitFor {
+public enum WaitForTarget {
 	VIEW, LOGIN, COMPONENT
 }

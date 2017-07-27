@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.events.WaitEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp.ComponentEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.component.PosLoadComponentEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.component.PreLoadComponentEvent;
@@ -18,12 +19,13 @@ public class Component {
 	private Map<AttributeKey, String> attributes;
 	private Collection<ComponentEvent> events;
 	private Collection<ComponentRule> rules;
-	private int attemptNumber;
 	private Collection<ComponentRule> rulesPreLoad;
 	private Collection<ComponentRule> rulesPosLoad;
+	private WaitEvent waitEvent;
+	
+	
 
 	public Component() {
-		attributes = new HashMap<>();
 		rules = new ArrayList<>();
 		events = new ArrayList<>();
 		
@@ -33,7 +35,7 @@ public class Component {
 		rulesPosLoad = new ArrayList<>();
 		rulesPosLoad.add(new RuleComponentPosLoad());
 		
-		attemptNumber = 99999;
+		attributes = new HashMap<>();
 	}
 	
 	public void validatePreLoadEvent() {
@@ -52,10 +54,6 @@ public class Component {
 		posLoad.doAction(this, rulesPosLoad);
 	}
 
-	public Map<AttributeKey, String> getAttributes() {
-		return attributes;
-	}
-
 	public Collection<ComponentRule> getRules() {
 		return rules;
 	}
@@ -64,11 +62,15 @@ public class Component {
 		return events;
 	}
 	
-	public int getAttemptNumber() {
-		return attemptNumber;
+	public WaitEvent getWaitEvent() {
+		return waitEvent;
 	}
 	
-	public void setAttemptNumber(int attemptNumber) {
-		this.attemptNumber = attemptNumber;
+	public void setWaitEvent(WaitEvent waitEvent) {
+		this.waitEvent = waitEvent;
+	}
+	
+	public Map<AttributeKey, String> getAttributes() {
+		return attributes;
 	}
 }

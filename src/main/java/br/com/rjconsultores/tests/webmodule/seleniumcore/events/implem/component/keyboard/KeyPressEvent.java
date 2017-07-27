@@ -13,6 +13,7 @@ public class KeyPressEvent implements KeyBoardEvent {
 
 	@Override
 	public void doAction(Component component, Collection<ComponentRule> rules) {
+		
 		if (component.getAttributes().containsKey(AttributeKey.FIND_PARENT_BY)) {
 			WebElement element = this.getElementBySibling(component.getAttributes());
 			element.sendKeys(component.getAttributes().get(AttributeKey.ATTRIBUTE_VALUE));

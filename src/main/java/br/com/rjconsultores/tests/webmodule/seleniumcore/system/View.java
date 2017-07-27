@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.events.WaitEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp.WindowEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.view.PosLoadWindowEvent;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.implem.view.PreLoadWindowEvent;
@@ -23,7 +24,7 @@ public class View {
 	private Collection<WindowRule> rulesPreLoad;
 	private Collection<WindowRule> rulesPosLoad;
 	
-	private int attemptNumber;
+	private WaitEvent waitEvent;
 
 	public View() {
 		attributes = new HashMap<>();
@@ -36,8 +37,6 @@ public class View {
 		
 		rulesPosLoad = new ArrayList<>();
 		rulesPosLoad.add(new RuleViewPosLoad());
-		
-		attemptNumber = 99999;
 	}
 
 	public void validatePreLoadEvent() {
@@ -76,15 +75,19 @@ public class View {
 		this.sessionId = sessionId;
 	}
 	
-	public int getAttemptNumber() {
-		return attemptNumber;
-	}
-	
 	public Collection<WindowRule> getRulesPreLoad() {
 		return rulesPreLoad;
 	}
 	
 	public Collection<WindowRule> getRulesPosLoad() {
 		return rulesPosLoad;
+	}
+	
+	public WaitEvent getWaitEvent() {
+		return waitEvent;
+	}
+	
+	public void doWait(WaitEvent waitEvent) {
+		this.waitEvent = waitEvent;
 	}
 }

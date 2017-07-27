@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Attribute;
 
 interface Event {
 	
@@ -18,46 +19,27 @@ interface Event {
 	 * @param attribute
 	 *            Tela que sofre o evento
 	 */
-	default void waitElementReady(Map<AttributeKey, String> attributes, int attemptNumber) {
+	default void waitElementReady(Attribute attribute, int numAttempts) {
 		// quantidade de tentativas para a exibição do elemento
-		if (attemptNumber == 0) {
+		if (numAttempts == 0) {
 			throw new RuntimeException("Quantidade de tentativas excedida. Elemento não disponível");
 		}
 		
-		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
-		if (findBy == null || findBy.isEmpty()) {
-			throw new RuntimeException(
-					"Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_COMPONENT_BY.");
-		}
 		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
-		if (valueFindBy == null) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
-		}
-		
-		String attributeID = attributes.get(AttributeKey.ATTRIBUTE_ID);
-		if (attributeID == null || attributeID.isEmpty()) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_ID.");
-		}
-		
-		String attributeValue = attributes.get(AttributeKey.ATTRIBUTE_VALUE);
-		if (attributeValue == null || attributeValue.isEmpty()) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_VALUE.");
-		}
-		
-		Collection<WebElement> elements = Selenium.getElements(findBy, valueFindBy);
+		Collection<WebElement> elements = Selenium.getElements(attribute.getIdentifyBy().getDescription(),
+					attribute.getId());
 		
 		if (elements == null || elements.isEmpty()) {
-			waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+			waitElementReady(attribute, --numAttempts, elements);
 		}
 		
 		for (WebElement element : elements) {
-			switch (attributeID ) {
+			switch (attribute.getId()) {
 				case "text":
 					{
-						if (element.getText().equals(attributeValue)) {
+						if (element.getText().equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --numAttempts, elements);
 							}
 							
 							return;
@@ -66,9 +48,9 @@ interface Event {
 					break;
 				case "value":
 					{
-						if (element.getAttribute("value").equals(attributeValue)) {
+						if (element.getAttribute("value").equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --numAttempts, elements);
 							}
 							
 							return;
@@ -77,9 +59,9 @@ interface Event {
 					break;
 				case "title":
 					{
-						if (element.getAttribute("title").equals(attributeValue)) {
+						if (element.getAttribute("title").equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --numAttempts, elements);
 							}
 							
 							return;
@@ -88,8 +70,8 @@ interface Event {
 			}
 		}
 		
-		throw new RuntimeException("Não foi possível encontrar o elemento " + attributeValue + " pelo attributo " + attributeID + 
-					".Consulta realizada via " + findBy + ": " + findBy);
+		throw new RuntimeException("Não foi possível encontrar o elemento " + attribute.getValue() + " pelo attributo " + attribute.getId() + 
+					".Consulta realizada via " + attribute.getIdentifyBy().getDescription() + ": " + attribute.getIdentifyBy().getDescription());
 	}
 	
 	/**
@@ -99,18 +81,18 @@ interface Event {
 	 * @param attribute
 	 *            Tela que sofre o evento
 	 */
-	default void waitElementReady(String attributeID, String attributeValue, int attemptNumber, Collection<WebElement> elements) {
+	default void waitElementReady(Attribute attribute, int attemptNumber, Collection<WebElement> elements) {
 		if (elements == null || elements.isEmpty()) {
-			waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+			waitElementReady(attribute, --attemptNumber, elements);
 		}
 		
 		for (WebElement element : elements) {
-			switch (attributeID ) {
+			switch (attribute.getId()) {
 				case "text":
 					{
-						if (element.getText().equals(attributeValue)) {
+						if (element.getText().equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --attemptNumber, elements);
 							}
 							
 							return;
@@ -119,9 +101,9 @@ interface Event {
 					break;
 				case "value":
 					{
-						if (element.getAttribute("value").equals(attributeValue)) {
+						if (element.getAttribute("value").equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --attemptNumber, elements);
 							}
 							
 							return;
@@ -130,9 +112,9 @@ interface Event {
 					break;
 				case "title":
 					{
-						if (element.getAttribute("title").equals(attributeValue)) {
+						if (element.getAttribute("title").equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
-								waitElementReady(attributeID, attributeValue, --attemptNumber, elements);
+								waitElementReady(attribute, --attemptNumber, elements);
 							}
 							
 							return;
@@ -258,7 +240,6 @@ interface Event {
 	}
 	
 	public default WebElement getElement(Map<AttributeKey, String> attributes) {
-<<<<<<< HEAD
 		String findBy = attributes.get(AttributeKey.FIND_VIEW_COMPONENT_BY);
 		if (findBy == null) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
@@ -266,15 +247,6 @@ interface Event {
 		
 		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY);
 		if (valueFindBy == null) {
-=======
-		String findBy = attributes.get(AttributeKey.FIND_COMPONENT_BY);
-		if (findBy == null || findBy.isEmpty()) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_BY.");
-		}
-		
-		String valueFindBy = attributes.get(AttributeKey.VALUE_FIND_COMPONENT_BY);
-		if (valueFindBy == null || valueFindBy.isEmpty()) {
->>>>>>> bfbde733aadb7b40d81b9c389adf78d6aedbb02c
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_BY.");
 		}
 		
