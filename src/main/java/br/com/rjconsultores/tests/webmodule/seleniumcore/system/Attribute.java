@@ -1,16 +1,23 @@
 package br.com.rjconsultores.tests.webmodule.seleniumcore.system;
 
-import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.IdentifyBy;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.events.FindBy;
 
 public class Attribute {
 	private String id;
 	private String value;
-	private IdentifyBy identifyBy;
+	private FindBy findBy;
+	private boolean waitForAttribute;
 	
-	public Attribute(String id, String value, IdentifyBy identifyBy) {
+	public Attribute(String id, String value, FindBy findBy) {
 		this.id = id;
 		this.value = value;
-		this.identifyBy = identifyBy;
+		this.findBy = findBy;
+		this.waitForAttribute = true;
+	}
+	
+	public Attribute(FindBy findBy) {
+		this.findBy = findBy;
+		this.waitForAttribute = false;
 	}
 	
 	public String getId() {
@@ -21,7 +28,11 @@ public class Attribute {
 		return value;
 	}
 	
-	public IdentifyBy getIdentifyBy() {
-		return identifyBy;
+	public FindBy getFindBy() {
+		return findBy;
+	}
+	
+	public boolean mustWait() {
+		return waitForAttribute;
 	}
 }
