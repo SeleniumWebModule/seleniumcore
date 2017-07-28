@@ -22,8 +22,6 @@ public class Component {
 	private Collection<ComponentRule> rulesPreLoad;
 	private Collection<ComponentRule> rulesPosLoad;
 	private WaitEvent waitEvent;
-	
-	
 
 	public Component() {
 		rules = new ArrayList<>();
