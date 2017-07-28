@@ -2,6 +2,7 @@ package br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.By;
@@ -25,12 +26,15 @@ interface Event {
 			throw new RuntimeException("Quantidade de tentativas excedida. Elemento não disponível");
 		}
 		
+		if (attribute.getFindBy() == null || attribute.getFindBy().getIdentifyBy() == null || attribute.getFindBy().getValue() == null || 
+				attribute.getFindBy().getValue().isEmpty()) {
+			throw new RuntimeException("O elemento não pode ser encontrado com o valor de identificação nulo ou vazio.");
+		}
 		
-		Collection<WebElement> elements = Selenium.getElements(attribute.getIdentifyBy().getDescription(),
-					attribute.getId());
-		
-		if (elements == null || elements.isEmpty()) {
-			waitElementReady(attribute, --numAttempts, elements);
+		Collection<WebElement> elements = Selenium.getElements(attribute.getFindBy().getIdentifyBy().getDescription(), attribute.getFindBy().getValue());
+						
+		if (!attribute.mustWait()) {
+			return;
 		}
 		
 		for (WebElement element : elements) {
@@ -71,7 +75,7 @@ interface Event {
 		}
 		
 		throw new RuntimeException("Não foi possível encontrar o elemento " + attribute.getValue() + " pelo attributo " + attribute.getId() + 
-					".Consulta realizada via " + attribute.getIdentifyBy().getDescription() + ": " + attribute.getIdentifyBy().getDescription());
+					".Consulta realizada via " + attribute.getFindBy().getIdentifyBy().getDescription() + ": " + attribute.getFindBy().getIdentifyBy().getDescription());
 	}
 	
 	/**
@@ -260,15 +264,22 @@ interface Event {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_ID.");
 		}
 		
+		Collection<WebElement> elements = Selenium.getElements(findBy, valueFindBy);
 		
-		for (WebElement element: Selenium.getElements(findBy, valueFindBy)) {
-			if (element.getAttribute(findAttributeBy) == null) {
-				throw new RuntimeException("O elemento " + valueFindBy + " não possui o atributo " + findAttributeBy);
-			}
-			
-			if (element.getAttribute(findAttributeBy).contains(attributeID)) {
+		
+		for (WebElement element: elements) {
+			if (!findAttributeBy.equals("text")) {
+				if (element.getAttribute(findAttributeBy) == null || !element.getAttribute(findAttributeBy).contains(attributeID)) {
+					continue;
+				}
+		
 				return element;
 			}
+			
+			if (element.getText().trim().equals(attributeID)) {
+				return element;
+			}
+			
 		}
 		
 		throw new RuntimeException("Não foi possível encontrar o elemento com o attribute ID " + attributeID);
