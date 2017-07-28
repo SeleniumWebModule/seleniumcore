@@ -64,7 +64,7 @@ public class Component {
 		return waitEvent;
 	}
 	
-	public void setWaitEvent(WaitEvent waitEvent) {
+	public void registerWaitEvent(WaitEvent waitEvent) {
 		this.waitEvent = waitEvent;
 	}
 	

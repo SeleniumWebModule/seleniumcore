@@ -41,7 +41,7 @@ interface Event {
 			switch (attribute.getId()) {
 				case "text":
 					{
-						if (element.getText().equals(attribute.getValue())) {
+						if (element.getText().trim().equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
 								waitElementReady(attribute, --numAttempts, elements);
 							}
@@ -52,7 +52,7 @@ interface Event {
 					break;
 				case "value":
 					{
-						if (element.getAttribute("value").equals(attribute.getValue())) {
+						if (element.getAttribute("value").trim().equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
 								waitElementReady(attribute, --numAttempts, elements);
 							}
@@ -63,7 +63,7 @@ interface Event {
 					break;
 				case "title":
 					{
-						if (element.getAttribute("title").equals(attribute.getValue())) {
+						if (element.getAttribute("title").trim().equals(attribute.getValue())) {
 							if (!element.isDisplayed()) {
 								waitElementReady(attribute, --numAttempts, elements);
 							}
