@@ -9,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.IdentifyBy;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Attribute;
 
 interface Event {
@@ -32,6 +33,11 @@ interface Event {
 		}
 		
 		Collection<WebElement> elements = Selenium.getElements(attribute.getFindBy().getIdentifyBy().getDescription(), attribute.getFindBy().getValue());
+		
+		if (elements == null || elements.isEmpty()) {
+			waitElementReady(attribute, --numAttempts, Selenium.getElements(attribute.getFindBy().getIdentifyBy().getDescription(), attribute.getFindBy().getValue()));
+			return;
+		}
 						
 		if (!attribute.mustWait()) {
 			return;
@@ -87,7 +93,8 @@ interface Event {
 	 */
 	default void waitElementReady(Attribute attribute, int attemptNumber, Collection<WebElement> elements) {
 		if (elements == null || elements.isEmpty()) {
-			waitElementReady(attribute, --attemptNumber, elements);
+			waitElementReady(attribute, --attemptNumber, Selenium.getElements(attribute.getFindBy().getIdentifyBy().getDescription(), attribute.getFindBy().getValue()));
+			return;
 		}
 		
 		for (WebElement element : elements) {
@@ -198,49 +205,46 @@ interface Event {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_SIBLING.");
 		}
 		
-		String attributeID = attributes.get(AttributeKey.ATTRIBUTE_ID);
-		if (attributeID == null || attributeID.isEmpty()) {
-			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_ID.");
-		}
-		
 		String attributeValue = attributes.get(AttributeKey.ATTRIBUTE_VALUE);
 		if (attributeValue == null || attributeValue.isEmpty()) {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.ATTRIBUTE_VALUE.");
 		}
 		
+		String findChildBy = attributes.get(AttributeKey.FIND_CHILD_BY);
+		if (findChildBy == null || findChildBy.isEmpty()) {
+			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.FIND_CHILD_BY.");
+		}
+		
+		String valueFindChildBy = attributes.get(AttributeKey.VALUE_FIND_CHILD_BY);
+		if (valueFindChildBy == null || valueFindChildBy.isEmpty()) {
+			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_CHILD_BY.");
+		}
+		
+		String attributeID = attributes.get(AttributeKey.SIBLING_ID);
+		
+		
 		Map<AttributeKey, String> siblingAttributes = new HashMap<>();
 		siblingAttributes.put(AttributeKey.FIND_VIEW_COMPONENT_BY, findSiblingBy);
 		siblingAttributes.put(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY, siblingfindBy);
+		siblingAttributes.put(AttributeKey.ATTRIBUTE_ID, attributes.get(AttributeKey.SIBLING_ID));
+		siblingAttributes.put(AttributeKey.ATTRIBUTE_VALUE, attributes.get(AttributeKey.SIBLING_VALUE));
 		
-		WebElement parent = getParentElement(this.getElementValue(siblingAttributes));
+		WebElement parent = getParentElement(getParentElement(getParentElement(this.getElementValue(siblingAttributes))));
+		
+		//refatorar - tratar com recursão até receber um input, label ...
 		
 		for (WebElement child: parent.findElements(By.xpath("./child::*"))) {
-			switch (attributeID ) 
-				{
-					case "text":
-						{
-							if (child.getText().equals(attributeValue)) {
-								return child;
-							}
-						}
-						break;
-					case "value":
-						{
-							if (child.getAttribute("value").equals(attributeValue)) {
-								return child;
-							}
-						}
-						break;
-					case "title":
-						{
-							if (child.getAttribute("title").equals(attributeValue)) {
-								return child;
-							}
-						}
+			for (WebElement childChild: child.findElements(By.xpath("./child::*"))) {
+				for (WebElement childChildChild: childChild.findElements(By.xpath("./child::*"))) {
+					childChildChild.getTagName();					
+					if (childChildChild.getAttribute("class").equals(valueFindChildBy)) {
+						return child;
+					}				
 				}
+			}
 		}
 		
-		throw new RuntimeException("Não ofi possível encontrar o elemento " + attributeValue);
+		throw new RuntimeException("Não foi possível encontrar o elemento " + findChildBy);
 	}
 	
 	public default WebElement getElement(Map<AttributeKey, String> attributes) {
