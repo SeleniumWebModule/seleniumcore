@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.WaitEvent;
@@ -23,6 +24,7 @@ public class View {
 	private Collection<WindowEvent> events;
 	private Collection<WindowRule> rulesPreLoad;
 	private Collection<WindowRule> rulesPosLoad;
+	private Set<Component> childs;
 	
 	private WaitEvent waitEvent;
 
@@ -89,5 +91,13 @@ public class View {
 	
 	public void doWait(WaitEvent waitEvent) {
 		this.waitEvent = waitEvent;
+	}
+	
+	public Collection<Component> getChilds() {
+		return childs;
+	}
+	
+	public void registerChilds(Set<Component> childs) {
+		this.childs = childs;
 	}
 }

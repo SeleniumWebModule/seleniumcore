@@ -16,6 +16,10 @@ public class KeyPressEvent implements KeyBoardEvent {
 		
 		if (component.getAttributes().containsKey(AttributeKey.FIND_PARENT_BY)) {
 			WebElement element = this.getElementBySibling(component.getAttributes());
+			System.out.println(element.getTagName());
+			System.out.println(element.getText());
+			System.out.println(element.getAttribute("class"));
+			System.out.println(element.getAttribute("id"));
 			element.sendKeys(component.getAttributes().get(AttributeKey.ATTRIBUTE_VALUE));
 			
 			rules.forEach(rule -> rule.validate(component, this));

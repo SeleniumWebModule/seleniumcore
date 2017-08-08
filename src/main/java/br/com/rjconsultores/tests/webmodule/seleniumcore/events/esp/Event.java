@@ -2,15 +2,16 @@ package br.com.rjconsultores.tests.webmodule.seleniumcore.events.esp;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
-import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.IdentifyBy;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Attribute;
+import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Component;
 
 interface Event {
 	
@@ -220,9 +221,6 @@ interface Event {
 			throw new RuntimeException("Você não passou o elemento necessário para essa operação. Configure o atributo AttributeKey.VALUE_FIND_CHILD_BY.");
 		}
 		
-		String attributeID = attributes.get(AttributeKey.SIBLING_ID);
-		
-		
 		Map<AttributeKey, String> siblingAttributes = new HashMap<>();
 		siblingAttributes.put(AttributeKey.FIND_VIEW_COMPONENT_BY, findSiblingBy);
 		siblingAttributes.put(AttributeKey.VALUE_FIND_VIEW_COMPONENT_BY, siblingfindBy);
@@ -231,20 +229,45 @@ interface Event {
 		
 		WebElement parent = getParentElement(getParentElement(getParentElement(this.getElementValue(siblingAttributes))));
 		
+		System.out.println(parent.getAttribute("id"));
+		
 		//refatorar - tratar com recursão até receber um input, label ...
 		
 		for (WebElement child: parent.findElements(By.xpath("./child::*"))) {
-			for (WebElement childChild: child.findElements(By.xpath("./child::*"))) {
+			/*for (WebElement childChild: child.findElements(By.xpath("./child::*"))) {
 				for (WebElement childChildChild: childChild.findElements(By.xpath("./child::*"))) {
 					childChildChild.getTagName();					
 					if (childChildChild.getAttribute("class").equals(valueFindChildBy)) {
-						return child;
-					}				
+						System.out.println(childChildChild.getTagName());
+						System.out.println(childChildChild.getText());
+						return childChildChild;
+					} else if (childChildChild.getTagName().equals("input")) {
+						System.out.println(childChildChild.getTagName());
+						System.out.println(childChildChild.getText());
+						return childChildChild;
+					}
 				}
+			}*/
+			
+			if (child.getTagName().equals("input")) {
+				return child;
 			}
 		}
 		
 		throw new RuntimeException("Não foi possível encontrar o elemento " + findChildBy);
+	}
+	
+	public default Set<Component> getChilds(WebElement parent) {
+		Set<Component> components = new HashSet<>(); 
+		Collection<WebElement> childs = parent.findElements(By.xpath("./child::*"));
+		
+		for (WebElement element: childs) {
+			Component component = new Component(element);
+			component.registerChilds(getChilds(component.getReference()));
+			components.add(new Component(element));
+		}
+		
+		return components;
 	}
 	
 	public default WebElement getElement(Map<AttributeKey, String> attributes) {

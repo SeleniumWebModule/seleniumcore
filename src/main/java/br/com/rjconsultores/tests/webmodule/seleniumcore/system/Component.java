@@ -3,7 +3,11 @@ package br.com.rjconsultores.tests.webmodule.seleniumcore.system;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import org.openqa.selenium.WebElement;
 
 import br.com.rjconsultores.tests.webmodule.seleniumcore.enums.AttributeKey;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.events.WaitEvent;
@@ -21,6 +25,10 @@ public class Component {
 	private Collection<ComponentRule> rules;
 	private Collection<ComponentRule> rulesPreLoad;
 	private Collection<ComponentRule> rulesPosLoad;
+	private Set<Component> childs;
+	
+	private WebElement reference;
+	
 	private WaitEvent waitEvent;
 
 	public Component() {
@@ -34,6 +42,12 @@ public class Component {
 		rulesPosLoad.add(new RuleComponentPosLoad());
 		
 		attributes = new HashMap<>();
+		childs = new HashSet<>();
+	}
+	
+	public Component(WebElement reference) {
+		this();
+		this.reference = reference;		
 	}
 	
 	public void validatePreLoadEvent() {
@@ -70,5 +84,21 @@ public class Component {
 	
 	public Map<AttributeKey, String> getAttributes() {
 		return attributes;
+	}
+	
+	public void addReference(WebElement reference) {
+		this.reference = reference;
+	}
+	
+	public WebElement getReference() {
+		return reference;
+	}
+	
+	public void registerChilds(Set<Component> childs) {
+		this.childs = childs;
+	}
+	
+	public Set<Component> getChilds() {
+		return childs;
 	}
 }
