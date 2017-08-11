@@ -6,15 +6,15 @@ import java.util.List;
 import br.com.rjconsultores.tests.webmodule.seleniumcore.system.Attribute;
 
 public class WaitEvent {
-	private int numAttempts;
+	private long numAttempts;
 	private List<Attribute> attributes;
 	
-	public WaitEvent(int numAttempts) {
+	public WaitEvent(long numAttempts) {
 		this.numAttempts = numAttempts;
 		attributes = new ArrayList<>();
 	}
 	
-	public int getNumAttempts() {
+	public long getNumAttempts() {
 		return numAttempts;
 	}
 	
